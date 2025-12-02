@@ -1,0 +1,8 @@
+{
+	"BuildId": "43139311",
+	"Modules": 
+	{
+		"ModVehicleLoader": "UnrealEditor-ModVehicleLoader.dll",
+		"ModVehicleLoaderEditor": "UnrealEditor-ModVehicleLoaderEditor.dll"
+	}
+}
