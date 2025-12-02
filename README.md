@@ -1,4 +1,3 @@
-```markdown
 # ModVehicleLoader Plugin
 
 **Version:** 1.0  
