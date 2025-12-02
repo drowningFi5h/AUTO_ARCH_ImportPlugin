@@ -61,13 +61,13 @@ Players should drop `.pak` mods next to the `.exe`:
 
 ```
 
-⚠ `CarImports` and `CAR_IMPORTS` are **not interchangeable**.  
+`CarImports` and `CAR_IMPORTS` are **not interchangeable**.  
 Editor → `CarImports`  
 Shipping build → `CAR_IMPORTS`
 
 ---
 
-## 🧱 C++ Architecture
+## C++ Architecture
 
 ### Runtime Module — `ModVehicleLoader`
 Runs in **Editor + packaged build**.
