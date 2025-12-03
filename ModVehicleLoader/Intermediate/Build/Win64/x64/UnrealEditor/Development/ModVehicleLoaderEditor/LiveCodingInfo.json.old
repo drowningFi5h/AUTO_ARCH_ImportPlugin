@@ -1,0 +1,10 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.ModVehicleLoaderEditor.cpp.obj": [
+			"PerModuleInline.gen.cpp.obj",
+			"ModVehicleBlueprintLibrary.cpp.obj",
+			"ModVehicleLoaderEditor.cpp.obj"
+		]
+	}
+}

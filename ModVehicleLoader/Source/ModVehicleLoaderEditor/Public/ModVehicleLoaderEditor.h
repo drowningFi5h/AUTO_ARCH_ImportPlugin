@@ -16,4 +16,10 @@ public:
 private:
 	void RegisterMenus();
 	TSharedPtr<class FUICommandList> PluginCommands;
+
+	/* import the FBX using AssetTools */
+	void ImportVehicleFromFBX(const FString& FilePath);
+
+	/* Material Matching */
+	void ProcessImportedAssets(const TArray<UObject*>& ImportedAssets);
 };

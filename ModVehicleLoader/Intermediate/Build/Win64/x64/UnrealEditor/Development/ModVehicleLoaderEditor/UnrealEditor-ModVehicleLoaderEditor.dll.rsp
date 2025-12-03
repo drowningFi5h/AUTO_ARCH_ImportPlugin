@@ -38,6 +38,7 @@
 /NOEXP
 "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Intermediate/Build/Win64/x64/AUTO_ARCH_PAK_EXPORTEditor/Development/UnrealEd/SharedPCH.UnrealEd.Project.ValApi.ValExpApi.Cpp20.InclOrderUnreal5_3.h.obj"
 "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModVehicleLoaderEditor/Module.ModVehicleLoaderEditor.cpp.obj"
+"C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModVehicleLoaderEditor/ModVehicleBlueprintLibrary.cpp.obj"
 "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModVehicleLoaderEditor/ModVehicleLoaderEditor.cpp.obj"
 "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModVehicleLoaderEditor/Default.rc2.res"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/UnrealEd/UnrealEditor-UnrealEd.lib"
@@ -47,6 +48,8 @@
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/SlateCore/UnrealEditor-SlateCore.lib"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/ToolMenus/UnrealEditor-ToolMenus.lib"
 "../Plugins/Editor/EditorScriptingUtilities/Intermediate/Build/Win64/x64/UnrealEditor/Development/EditorScriptingUtilities/UnrealEditor-EditorScriptingUtilities.lib"
+"../Intermediate/Build/Win64/x64/UnrealEditor/Development/DesktopPlatform/UnrealEditor-DesktopPlatform.lib"
+"../Intermediate/Build/Win64/x64/UnrealEditor/Development/MainFrame/UnrealEditor-MainFrame.lib"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/Core/UnrealEditor-Core.lib"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/CoreUObject/UnrealEditor-CoreUObject.lib"
 "../Intermediate/Build/Win64/x64/UnrealEditor/Development/Engine/UnrealEditor-Engine.lib"

@@ -26,7 +26,9 @@ public class ModVehicleLoaderEditor : ModuleRules
 				"Slate",           // UI Framework
 				"SlateCore",       // UI Core
 				"ToolMenus",       // For adding buttons to the toolbar
-				"EditorScriptingUtilities" // Helper for automation tasks
+				"EditorScriptingUtilities", // Helper for automation tasks
+				"DesktopPlatform", // For file dialogs
+				"MainFrame"
 			}
 		);
 	}

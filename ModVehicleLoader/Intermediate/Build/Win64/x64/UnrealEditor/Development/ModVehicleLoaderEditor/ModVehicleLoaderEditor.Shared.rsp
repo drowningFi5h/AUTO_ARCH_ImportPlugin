@@ -288,6 +288,7 @@
 /I "../Plugins/Editor/EditorScriptingUtilities/Source/EditorScriptingUtilities/Public"
 /I "../Intermediate/Build/Win64/UnrealEditor/Inc/StaticMeshEditor/UHT"
 /I "Editor/StaticMeshEditor/Public"
+/I "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/UnrealEditor/Inc/ModVehicleLoaderEditor/UHT"
 /I "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Source"
 /I "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Source/ModVehicleLoaderEditor/Public"
 /I "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/UnrealEditor/Inc/ModVehicleLoader/UHT"
