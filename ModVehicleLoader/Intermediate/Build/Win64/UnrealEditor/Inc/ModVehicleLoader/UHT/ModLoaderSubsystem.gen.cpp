@@ -32,11 +32,11 @@ struct Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "Modding" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "// FIX: Return strictly Actor Classes so SpawnActor accepts them\n" },
+		{ "Comment", "// Return strictly Actor Classes so SpawnActor accepts them\n" },
 #endif
 		{ "ModuleRelativePath", "Public/ModLoaderSubsystem.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "FIX: Return strictly Actor Classes so SpawnActor accepts them" },
+		{ "ToolTip", "Return strictly Actor Classes so SpawnActor accepts them" },
 #endif
 	};
 #endif // WITH_METADATA
@@ -78,13 +78,7 @@ struct Z_Construct_UFunction_UModLoaderSubsystem_LoadMods_Statics
 #if WITH_METADATA
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "Modding" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "// Call this from Blueprint when the game starts\n" },
-#endif
 		{ "ModuleRelativePath", "Public/ModLoaderSubsystem.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Call this from Blueprint when the game starts" },
-#endif
 	};
 #endif // WITH_METADATA
 	static const UECodeGen_Private::FFunctionParams FuncParams;
@@ -169,8 +163,8 @@ struct Z_Construct_UClass_UModLoaderSubsystem_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
-		{ &Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses, "GetLoadedVehicleClasses" }, // 1923437590
-		{ &Z_Construct_UFunction_UModLoaderSubsystem_LoadMods, "LoadMods" }, // 1086313727
+		{ &Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses, "GetLoadedVehicleClasses" }, // 2509161610
+		{ &Z_Construct_UFunction_UModLoaderSubsystem_LoadMods, "LoadMods" }, // 3442911583
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -222,10 +216,10 @@ UModLoaderSubsystem::~UModLoaderSubsystem() {}
 struct Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UModLoaderSubsystem, UModLoaderSubsystem::StaticClass, TEXT("UModLoaderSubsystem"), &Z_Registration_Info_UClass_UModLoaderSubsystem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UModLoaderSubsystem), 3606543554U) },
+		{ Z_Construct_UClass_UModLoaderSubsystem, UModLoaderSubsystem::StaticClass, TEXT("UModLoaderSubsystem"), &Z_Registration_Info_UClass_UModLoaderSubsystem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UModLoaderSubsystem), 2910857737U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_3050724208(TEXT("/Script/ModVehicleLoader"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_3529930031(TEXT("/Script/ModVehicleLoader"),
 	Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

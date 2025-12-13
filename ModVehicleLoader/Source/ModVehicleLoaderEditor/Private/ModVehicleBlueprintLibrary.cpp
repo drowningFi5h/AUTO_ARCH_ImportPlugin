@@ -7,7 +7,6 @@
 #include "Kismet2/KismetEditorUtilities.h"
 #include "Engine/Blueprint.h"
 #include "Components/StaticMeshComponent.h"
-#include "Components/SceneComponent.h"
 #include "Factories/BlueprintFactory.h"
 #include "AssetToolsModule.h"
 
@@ -18,9 +17,12 @@
 #include "DesktopPlatformModule.h"
 #include "Factories/FbxFactory.h"
 #include "Factories/FbxImportUI.h"
-#include "Factories/FbxStaticMeshImportData.h" 
+#include "Factories/FbxStaticMeshImportData.h"
 #include "AutomatedAssetImportData.h"
 #include "Framework/Application/SlateApplication.h"
+
+#include "ContentBrowserModule.h"
+#include "IContentBrowserSingleton.h"
 
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
@@ -28,7 +30,7 @@
 #include "FileHelpers.h"
 
 // =====================================================================
-// Helper Functions
+// SUPPORTING FUNCTIONS
 
 static UMaterialInterface* FindMasterMaterial(const FString& SlotName)
 {
@@ -43,16 +45,24 @@ static UMaterialInterface* FindMasterMaterial(const FString& SlotName)
 
     AssetRegistryModule.Get().GetAssets(Filter, AssetData);
 
+    UMaterialInterface* BestMatch = nullptr;
+
     for (const FAssetData& Data : AssetData)
     {
-        if (Data.PackageName.ToString().StartsWith(TEXT("/Game/CarImports"))) continue;
+        FString PkgName = Data.PackageName.ToString();
+
+        if (PkgName.Contains(TEXT("/CarImports/"), ESearchCase::IgnoreCase)) continue;
 
         if (Data.AssetName.ToString().Contains(SlotName, ESearchCase::IgnoreCase))
         {
-            return Cast<UMaterialInterface>(Data.GetAsset());
+            BestMatch = Cast<UMaterialInterface>(Data.GetAsset());
+            if (PkgName.Contains(TEXT("/AUTO_MATERIALS/"), ESearchCase::IgnoreCase))
+            {
+                return BestMatch;
+            }
         }
     }
-    return nullptr;
+    return BestMatch;
 }
 
 static void AutoMatchMaterials(UStaticMesh* Mesh)
@@ -68,7 +78,7 @@ static void AutoMatchMaterials(UStaticMesh* Mesh)
 
         if (FoundMat)
         {
-            UE_LOG(LogTemp, Log, TEXT("Matching Material: %s -> %s"), *ImportedMatName, *FoundMat->GetName());
+            UE_LOG(LogTemp, Warning, TEXT("MATCHED: Slot '%s' -> Asset '%s'"), *ImportedMatName, *FoundMat->GetName());
             MatSlot.MaterialInterface = FoundMat;
         }
     }
@@ -102,24 +112,46 @@ static void CreateCompositeVehicleBlueprint(const TArray<UStaticMesh*>& Meshes)
 
     if (NewBP)
     {
-        // 1. Create a Default Scene Root
-        USCS_Node* RootNode = NewBP->SimpleConstructionScript->CreateNode(USceneComponent::StaticClass(), TEXT("SharedRoot"));
-        NewBP->SimpleConstructionScript->AddNode(RootNode);
+        UE_LOG(LogTemp, Warning, TEXT("Creating Composite Blueprint with Physics Root: %s"), *BPName);
 
-        // 2. Add Meshes
-        for (UStaticMesh* Mesh : Meshes)
+        USCS_Node* RootNode = nullptr;
+
+        for (int32 i = 0; i < Meshes.Num(); i++)
         {
-            FString CompName = FString::Printf(TEXT("Comp_%s"), *Mesh->GetName());
+            UStaticMesh* Mesh = Meshes[i];
+            
+            FString CompName = (i == 0) ? TEXT("Body_Root") : FString::Printf(TEXT("Comp_%s"), *Mesh->GetName());
             
             USCS_Node* MeshNode = NewBP->SimpleConstructionScript->CreateNode(UStaticMeshComponent::StaticClass(), FName(*CompName));
             UStaticMeshComponent* ComponentTemplate = Cast<UStaticMeshComponent>(MeshNode->ComponentTemplate);
             
             ComponentTemplate->SetStaticMesh(Mesh);
-            ComponentTemplate->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
-            ComponentTemplate->SetWorldScale3D(FVector(1.1f)); 
-
-            NewBP->SimpleConstructionScript->AddNode(MeshNode);
-            MeshNode->SetParent(RootNode);
+            
+            // --- PHYSICS & SCALE LOGIC ---
+            if (i == 0)
+            {
+                // ROOT: Has Physics, Collision, and 1.1 Scale
+                ComponentTemplate->SetCollisionProfileName(FName("BlockAllDynamic"));
+                ComponentTemplate->SetSimulatePhysics(true);
+                ComponentTemplate->SetMassOverrideInKg(NAME_None, 1500.0f, true);
+                ComponentTemplate->SetWorldScale3D(FVector(1.1f)); 
+                
+                NewBP->SimpleConstructionScript->AddNode(MeshNode);
+                RootNode = MeshNode; 
+            }
+            else
+            {
+                // OTHERS: No Physics, No Collision, 1.0 Scale
+                ComponentTemplate->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+                ComponentTemplate->SetSimulatePhysics(false);
+                ComponentTemplate->SetWorldScale3D(FVector(1.0f)); 
+                
+                NewBP->SimpleConstructionScript->AddNode(MeshNode);
+                if (RootNode)
+                {
+                    MeshNode->SetParent(RootNode);
+                }
+            }
         }
 
         FKismetEditorUtilities::CompileBlueprint(NewBP);
@@ -142,7 +174,6 @@ static void ProcessAssets(const TArray<UObject*>& ImportedAssets)
             MeshesToProcess.Add(Mesh);
         }
     }
-
     CreateCompositeVehicleBlueprint(MeshesToProcess);
 }
 
@@ -167,7 +198,6 @@ static void ScanTempFolderForMeshes(TArray<UObject*>& OutAssets)
         }
     }
 }
-
 // =====================================================================
 // UModVehicleBlueprintLibrary IMPLEMENTATION
 
@@ -224,26 +254,20 @@ void UModVehicleBlueprintLibrary::ImportModVehicle(FString FilePath)
     UFbxFactory* FbxFactory = NewObject<UFbxFactory>();
     ImportData->Factory = FbxFactory;
     
-    // Create Import Options
     FbxFactory->ImportUI = NewObject<UFbxImportUI>(FbxFactory);
     FbxFactory->ImportUI->MeshTypeToImport = FBXIT_StaticMesh;
     FbxFactory->ImportUI->bImportMaterials = true;
     FbxFactory->ImportUI->bImportTextures = true;
     FbxFactory->ImportUI->bImportMesh = true;
-    FbxFactory->ImportUI->bAutomatedImportShouldDetectType = false;
-
-    // Force vertices to absolute world coordinates
-    // This ensures pivots stay at 0,0,0 relative to the mesh
+    // PIVOT FIX:
     FbxFactory->ImportUI->StaticMeshImportData->bTransformVertexToAbsolute = true; 
     FbxFactory->ImportUI->StaticMeshImportData->bBakePivotInVertex = false;
-    // -------------------------------------------
 
     FAssetToolsModule& AssetToolsModule = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools");
     TArray<UObject*> Assets = AssetToolsModule.Get().ImportAssetsAutomated(ImportData);
 
     if (Assets.Num() == 0)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Import returned 0 assets. Scanning Temp folder manually..."));
         ScanTempFolderForMeshes(Assets);
     }
 
@@ -260,57 +284,72 @@ void UModVehicleBlueprintLibrary::ImportModVehicle(FString FilePath)
 
 void UModVehicleBlueprintLibrary::PackModPlugin(FString PluginName)
 {
-    UE_LOG(LogTemp, Warning, TEXT("--- STARTING DIRECT PAK EXPORT ---"));
+    // --- SMART EXPORT with SELECTION ---
+    IContentBrowserSingleton& ContentBrowser = FModuleManager::LoadModuleChecked<FContentBrowserModule>("ContentBrowser").Get();
+    TArray<FAssetData> Selection;
+    ContentBrowser.GetSelectedAssets(Selection);
+    
+    if (Selection.Num() == 0)
+    {
+        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Please select the Vehicle Blueprint in the Content Browser first, then click Export!"));
+        return;
+    }
 
-    const bool bPromptUser = false;
-    const bool bSaveMapPackages = false;
-    const bool bSaveContentPackages = true;
-    const bool bFastSave = false;
-    const bool bNotifyNoPackagesSaved = false;
-    const bool bCanBeDeclined = false;
-    FEditorFileUtils::SaveDirtyPackages(bPromptUser, bSaveMapPackages, bSaveContentPackages, bFastSave, bNotifyNoPackagesSaved, bCanBeDeclined);
-    UE_LOG(LogTemp, Warning, TEXT("Force Saved Dirty Packages."));
+    UE_LOG(LogTemp, Warning, TEXT("--- STARTING SMART PACK FOR: %s ---"), *Selection[0].AssetName.ToString());
+
+    FEditorFileUtils::SaveDirtyPackages(false, false, true, false, false, false);
 
     FString EngineDir = FPaths::ConvertRelativePathToFull(FPaths::EngineDir());
     FString UnrealPakExe = EngineDir + TEXT("Binaries/Win64/UnrealPak.exe");
-    
     FString ProjectDir = FPaths::ConvertRelativePathToFull(FPaths::ProjectDir());
-    FString ContentDir = ProjectDir + TEXT("Content/CarImports/");
-    
     FString OutputDir = FPaths::ProjectSavedDir() + TEXT("StagedMods/");
-    FString OutputPak = OutputDir + TEXT("ModdedVehicle.pak");
+    
+    FString PakName = Selection[0].AssetName.ToString() + TEXT(".pak");
+    FString OutputPak = OutputDir + PakName;
 
     IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
     PlatformFile.CreateDirectoryTree(*OutputDir);
 
-    FString ResponseFilePath = OutputDir + TEXT("PakList.txt");
+    FAssetRegistryModule& AssetRegistryModule = FModuleManager::LoadModuleChecked<FAssetRegistryModule>("AssetRegistry");
+    TArray<FName> Dependencies;
+    AssetRegistryModule.Get().GetDependencies(Selection[0].PackageName, Dependencies, UE::AssetRegistry::EDependencyCategory::Package);
+    Dependencies.Add(Selection[0].PackageName);
+
     FString ResponseContent;
-
-    TArray<FString> FilesToPack;
-    PlatformFile.FindFilesRecursively(FilesToPack, *ContentDir, nullptr);
-
     int32 FileCount = 0;
-    for (const FString& File : FilesToPack)
+
+    for (const FName& DepPackage : Dependencies)
     {
-        FString RelativePath = File;
-        FPaths::MakePathRelativeTo(RelativePath, *ProjectDir);
-        FString MountPath = RelativePath.Replace(TEXT("Content/"), TEXT("../../../Game/"));
+        FString PkgNameStr = DepPackage.ToString();
         
-        ResponseContent += FString::Printf(TEXT("\"%s\" \"%s\"\n"), *File, *MountPath);
+        if (!PkgNameStr.StartsWith("/Game/CarImports")) continue;
+
+        FString RelPath = PkgNameStr.Replace(TEXT("/Game/"), TEXT("Content/"));
+        FString AbsPath = ProjectDir + RelPath + TEXT(".uasset");
+
+        if (!PlatformFile.FileExists(*AbsPath))
+        {
+             AbsPath = ProjectDir + RelPath + TEXT(".umap");
+             if (!PlatformFile.FileExists(*AbsPath)) continue;
+        }
+
+        FString MountPath = PkgNameStr.Replace(TEXT("/Game/"), TEXT("../../../Game/"));
+        MountPath += TEXT(".uasset");
+
+        UE_LOG(LogTemp, Warning, TEXT("Adding to PAK: %s"), *AbsPath);
+        ResponseContent += FString::Printf(TEXT("\"%s\" \"%s\"\n"), *AbsPath, *MountPath);
         FileCount++;
     }
 
     if (FileCount == 0)
     {
-        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Export Failed: CarImports folder is empty on DISK! Did you save?"));
+        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Error: No valid assets found to pack."));
         return;
     }
 
+    FString ResponseFilePath = OutputDir + TEXT("PakList.txt");
     FFileHelper::SaveStringToFile(ResponseContent, *ResponseFilePath);
-
     FString Params = FString::Printf(TEXT("\"%s\" -create=\"%s\""), *OutputPak, *ResponseFilePath);
-
-    UE_LOG(LogTemp, Warning, TEXT("Running UnrealPak: %s %s"), *UnrealPakExe, *Params);
 
     int32 ReturnCode = 0;
     FString Result;
@@ -318,12 +357,12 @@ void UModVehicleBlueprintLibrary::PackModPlugin(FString PluginName)
 
     if (ReturnCode == 0)
     {
-        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Export Successful! Check Saved/StagedMods"));
-        UE_LOG(LogTemp, Warning, TEXT("Pak Success. Files packed: %d"), FileCount);
+        FString Msg = FString::Printf(TEXT("Export Success! Created %s with %d files."), *PakName, FileCount);
+        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(Msg));
+        UE_LOG(LogTemp, Warning, TEXT("Pak Success: %s"), *OutputPak);
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("Pak Failed: %s"), *Result);
-        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Export Failed. Check Output Log."));
+        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Export Failed."));
     }
 }
