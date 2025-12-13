@@ -12,10 +12,10 @@ public class ModVehicleLoader : ModuleRules
 				"Core",
 				"CoreUObject",
 				"Engine",
-				"PakFile",          // REQUIRED for .pak loading
-				"Json",             // Useful for metadata
-				"Projects",          // For IPluginManager
-				"AssetRegistry"    // For asset discovery
+				"PakFile",          
+				"Json",            
+				"Projects",          
+				"AssetRegistry" 
 			}
 		);
 	}

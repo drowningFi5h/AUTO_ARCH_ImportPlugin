@@ -2,7 +2,10 @@
 	"RemapUnityFiles": 
 	{
 		"Module.ModVehicleLoaderEditor.cpp.obj": [
+			"ModVehicleBlueprintLibrary.gen.cpp.obj",
+			"ModVehicleLoaderEditor.init.gen.cpp.obj",
 			"PerModuleInline.gen.cpp.obj",
+			"ModAssetProcessor.cpp.obj",
 			"ModVehicleBlueprintLibrary.cpp.obj",
 			"ModVehicleLoaderEditor.cpp.obj"
 		]

@@ -1,0 +1,11 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.ModVehicleLoader.cpp.obj": [
+			"ModLoaderSubsystem.gen.cpp.obj",
+			"ModVehicleLoader.init.gen.cpp.obj",
+			"ModLoaderSubsystem.cpp.obj",
+			"ModVehicleLoader.cpp.obj"
+		]
+	}
+}

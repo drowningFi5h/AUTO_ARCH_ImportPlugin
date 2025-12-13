@@ -1,0 +1,13 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "c:\\users\\krat0s\\onedrive\\desktop\\auto_arch_pak_export\\auto_arch_pak_export\\plugins\\modvehicleloader\\source\\modvehicleloadereditor\\private\\modassetprocessor.cpp",
+        "ProvidedModule": "",
+        "PCH": "c:\\users\\krat0s\\onedrive\\desktop\\auto_arch_pak_export\\auto_arch_pak_export\\intermediate\\build\\win64\\x64\\auto_arch_pak_exporteditor\\development\\unrealed\\sharedpch.unrealed.project.valapi.valexpapi.cpp20.inclorderunreal5_3.h.pch",
+        "Includes": [
+            "c:\\users\\krat0s\\onedrive\\desktop\\auto_arch_pak_export\\auto_arch_pak_export\\plugins\\modvehicleloader\\intermediate\\build\\win64\\x64\\unrealeditor\\development\\modvehicleloadereditor\\definitions.modvehicleloadereditor.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

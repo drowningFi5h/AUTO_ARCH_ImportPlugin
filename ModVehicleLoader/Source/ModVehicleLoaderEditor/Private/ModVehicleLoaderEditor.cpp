@@ -4,17 +4,12 @@
 #include "Framework/MultiBox/MultiBoxBuilder.h"
 #include "LevelEditor.h"
 
-// --- FIX: Use direct includes without the 'DesktopPlatform/Public/' prefix ---
-#include "IDesktopPlatform.h"
-#include "DesktopPlatformModule.h" 
-
-#include "AssetToolsModule.h"
-#include "Factories/FbxFactory.h"
-#include "AutomatedAssetImportData.h"
+#include "EditorUtilitySubsystem.h"
+#include "EditorUtilityWidgetBlueprint.h"
+#include "Editor.h" // For GEditor
 
 #define LOCTEXT_NAMESPACE "FModVehicleLoaderEditorModule"
 
-// Define the UI Command
 class FModVehicleLoaderCommands : public TCommands<FModVehicleLoaderCommands>
 {
 public:
@@ -30,19 +25,14 @@ public:
 
 	virtual void RegisterCommands() override
 	{
-		UI_COMMAND(OpenPluginWindow, "Import Vehicle", "Select an FBX to create a Mod Vehicle", EUserInterfaceActionType::Button, FInputChord());
+		UI_COMMAND(OpenPluginWindow, "Import Vehicle", "Launch the Mod Importer Tool", EUserInterfaceActionType::Button, FInputChord());
 	}
 };
 
 void FModVehicleLoaderEditorModule::StartupModule()
 {
-    // Ensure DesktopPlatform is loaded explicitly
-    if (!FModuleManager::Get().IsModuleLoaded(TEXT("DesktopPlatform")))
-    {
-        FModuleManager::Get().LoadModule(TEXT("DesktopPlatform"));
-    }
-    
-	// 1. Register the Command
+    UE_LOG(LogTemp, Error, TEXT("ModVehicleLoaderEditorModule::StartupModule Executing..."));
+
 	FModVehicleLoaderCommands::Register();
 	PluginCommands = MakeShareable(new FUICommandList);
 
@@ -51,8 +41,9 @@ void FModVehicleLoaderEditorModule::StartupModule()
 		FExecuteAction::CreateRaw(this, &FModVehicleLoaderEditorModule::PluginButtonClicked),
 		FCanExecuteAction());
 
-	// 2. Add to the Toolbar using UToolMenus
 	UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateRaw(this, &FModVehicleLoaderEditorModule::RegisterMenus));
+    FLevelEditorModule& LevelEditorModule = FModuleManager::LoadModuleChecked<FLevelEditorModule>("LevelEditor");
+    LevelEditorModule.GetGlobalLevelEditorActions()->Append(PluginCommands.ToSharedRef());
 }
 
 void FModVehicleLoaderEditorModule::ShutdownModule()
@@ -64,87 +55,59 @@ void FModVehicleLoaderEditorModule::ShutdownModule()
 
 void FModVehicleLoaderEditorModule::RegisterMenus()
 {
+    UE_LOG(LogTemp, Error, TEXT("ModVehicleLoaderEditorModule::RegisterMenus Executing..."));
+
 	FToolMenuOwnerScoped OwnerScoped(this);
 	UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.PlayToolBar");
 	FToolMenuSection& Section = Menu->FindOrAddSection("ModdingTools");
 	
 	Section.AddEntry(FToolMenuEntry::InitToolBarButton(
 		FModVehicleLoaderCommands::Get().OpenPluginWindow,
-		FText::FromString("Import Vehicle"),
-		FText::FromString("Import FBX and Create Mod"),
+		FText::FromString("Mod Tool"), // Shortened name
+		FText::FromString("Launch the Mod Importer Utility"),
 		FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.ImportScene")
 	));
 }
 
 void FModVehicleLoaderEditorModule::PluginButtonClicked()
 {
-    // Ensure the module is available
-    if (!FModuleManager::Get().IsModuleLoaded(TEXT("DesktopPlatform")))
+    UE_LOG(LogTemp, Error, TEXT(">>> TOOLBAR BUTTON CLICKED! <<<"));
+
+    // In Unreal paths, Content folder = /Game/
+    FString WidgetPath = TEXT("/Game/test/EUW_ModImporter.EUW_ModImporter");
+
+    UE_LOG(LogTemp, Warning, TEXT("Attempting to load widget at: %s"), *WidgetPath);
+
+    // 2. Load the Asset
+    UObject* LoadedAsset = LoadObject<UObject>(nullptr, *WidgetPath);
+    
+    if (!LoadedAsset)
     {
-        UE_LOG(LogTemp, Error, TEXT("DesktopPlatform Module is not loaded. Cannot open file dialog."));
+        UE_LOG(LogTemp, Error, TEXT("Could not find EUW_ModImporter! Object is NULL. Check path: %s"), *WidgetPath);
+        FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Error: Could not find EUW_ModImporter in /Game/test/. Did you move it?"));
         return;
     }
 
-	IDesktopPlatform* DesktopPlatform = FDesktopPlatformModule::Get();
-	
-	if (DesktopPlatform) 
-	{
-        UE_LOG(LogTemp, Log, TEXT("DesktopPlatform initialized. Attempting to open file dialog."));
-        
-		TArray<FString> OpenFilenames;
-		const bool bOpened = DesktopPlatform->OpenFileDialog(
-			nullptr,
-			TEXT("Select Vehicle FBX"),
-			TEXT(""),
-			TEXT(""),
-			TEXT("FBX Files|*.fbx"),
-			EFileDialogFlags::None,
-			OpenFilenames
-		);
+    UE_LOG(LogTemp, Warning, TEXT("Asset found: %s. Casting to EditorUtilityWidgetBlueprint..."), *LoadedAsset->GetName());
 
-		if (bOpened && OpenFilenames.Num() > 0)
-		{
-			ImportVehicleFromFBX(OpenFilenames[0]);
-		}
-	}
+    // 3. Cast and Spawn
+    if (UEditorUtilityWidgetBlueprint* WidgetBP = Cast<UEditorUtilityWidgetBlueprint>(LoadedAsset))
+    {
+        UEditorUtilitySubsystem* EditorUtilitySubsystem = GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>();
+        if (EditorUtilitySubsystem)
+        {
+            EditorUtilitySubsystem->SpawnAndRegisterTab(WidgetBP);
+            UE_LOG(LogTemp, Error, TEXT("SUCCESS: Widget Spawned."));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("FAILED to get EditorUtilitySubsystem."));
+        }
+    }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("Failed to retrieve IDesktopPlatform interface. Dialog failed to open."));
+        UE_LOG(LogTemp, Error, TEXT("Found asset, but it is NOT an Editor Utility Widget Blueprint. Actual Class: %s"), *LoadedAsset->GetClass()->GetName());
     }
-}
-
-void FModVehicleLoaderEditorModule::ImportVehicleFromFBX(const FString& FilePath)
-{
-	UE_LOG(LogTemp, Log, TEXT("Starting Import for: %s"), *FilePath);
-
-	UAutomatedAssetImportData* ImportData = NewObject<UAutomatedAssetImportData>();
-	ImportData->bReplaceExisting = true;
-	ImportData->DestinationPath = TEXT("/Game/CarImports/Temp"); 
-	ImportData->Filenames.Add(FilePath);
-
-	UFbxFactory* FbxFactory = NewObject<UFbxFactory>();
-	ImportData->Factory = FbxFactory;
-
-	FAssetToolsModule& AssetToolsModule = FModuleManager::Get().LoadModuleChecked<FAssetToolsModule>("AssetTools");
-	TArray<UObject*> ImportedAssets = AssetToolsModule.Get().ImportAssetsAutomated(ImportData);
-
-	if (ImportedAssets.Num() > 0)
-	{
-		FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Import Successful! Check Content/CarImports/Temp"));
-		ProcessImportedAssets(ImportedAssets);
-	}
-	else
-	{
-		FMessageDialog::Open(EAppMsgType::Ok, FText::FromString("Import Failed or Cancelled. Check Output Log for details."));
-	}
-}
-
-void FModVehicleLoaderEditorModule::ProcessImportedAssets(const TArray<UObject*>& ImportedAssets)
-{
-	for (UObject* Asset : ImportedAssets)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Imported Asset: %s"), *Asset->GetName());
-	}
 }
 
 #undef LOCTEXT_NAMESPACE

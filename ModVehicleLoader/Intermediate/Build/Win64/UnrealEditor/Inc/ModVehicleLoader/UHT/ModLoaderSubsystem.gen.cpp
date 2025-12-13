@@ -14,7 +14,7 @@ void EmptyLinkFunctionForGeneratedCodeModLoaderSubsystem() {}
 
 // ********** Begin Cross Module References ********************************************************
 COREUOBJECT_API UClass* Z_Construct_UClass_UClass();
-COREUOBJECT_API UClass* Z_Construct_UClass_UObject_NoRegister();
+ENGINE_API UClass* Z_Construct_UClass_AActor_NoRegister();
 ENGINE_API UClass* Z_Construct_UClass_UGameInstanceSubsystem();
 MODVEHICLELOADER_API UClass* Z_Construct_UClass_UModLoaderSubsystem();
 MODVEHICLELOADER_API UClass* Z_Construct_UClass_UModLoaderSubsystem_NoRegister();
@@ -26,17 +26,17 @@ struct Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics
 {
 	struct ModLoaderSubsystem_eventGetLoadedVehicleClasses_Parms
 	{
-		TArray<UClass*> ReturnValue;
+		TArray<TSubclassOf<AActor>> ReturnValue;
 	};
 #if WITH_METADATA
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "Modding" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "// Returns a list of all vehicle classes found in the loaded Paks\n" },
+		{ "Comment", "// FIX: Return strictly Actor Classes so SpawnActor accepts them\n" },
 #endif
 		{ "ModuleRelativePath", "Public/ModLoaderSubsystem.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Returns a list of all vehicle classes found in the loaded Paks" },
+		{ "ToolTip", "FIX: Return strictly Actor Classes so SpawnActor accepts them" },
 #endif
 	};
 #endif // WITH_METADATA
@@ -45,8 +45,8 @@ struct Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static const UECodeGen_Private::FFunctionParams FuncParams;
 };
-const UECodeGen_Private::FClassPropertyParams Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UClass, Z_Construct_UClass_UObject_NoRegister, METADATA_PARAMS(0, nullptr) };
-const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0010000000000580, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ModLoaderSubsystem_eventGetLoadedVehicleClasses_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FClassPropertyParams Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::NewProp_ReturnValue_Inner = { "ReturnValue", nullptr, (EPropertyFlags)0x0004000000000000, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UClass, Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::NewProp_ReturnValue = { "ReturnValue", nullptr, (EPropertyFlags)0x0014000000000580, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ModLoaderSubsystem_eventGetLoadedVehicleClasses_Parms, ReturnValue), EArrayPropertyFlags::None, METADATA_PARAMS(0, nullptr) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::NewProp_ReturnValue_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses_Statics::NewProp_ReturnValue,
@@ -67,7 +67,7 @@ DEFINE_FUNCTION(UModLoaderSubsystem::execGetLoadedVehicleClasses)
 {
 	P_FINISH;
 	P_NATIVE_BEGIN;
-	*(TArray<UClass*>*)Z_Param__Result=P_THIS->GetLoadedVehicleClasses();
+	*(TArray<TSubclassOf<AActor>>*)Z_Param__Result=P_THIS->GetLoadedVehicleClasses();
 	P_NATIVE_END;
 }
 // ********** End Class UModLoaderSubsystem Function GetLoadedVehicleClasses ***********************
@@ -79,11 +79,11 @@ struct Z_Construct_UFunction_UModLoaderSubsystem_LoadMods_Statics
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "Modding" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "// Call this from Blueprint when the game starts or when the user presses \"Refresh Mods\"\n" },
+		{ "Comment", "// Call this from Blueprint when the game starts\n" },
 #endif
 		{ "ModuleRelativePath", "Public/ModLoaderSubsystem.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Call this from Blueprint when the game starts or when the user presses \"Refresh Mods\"" },
+		{ "ToolTip", "Call this from Blueprint when the game starts" },
 #endif
 	};
 #endif // WITH_METADATA
@@ -169,8 +169,8 @@ struct Z_Construct_UClass_UModLoaderSubsystem_Statics
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
-		{ &Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses, "GetLoadedVehicleClasses" }, // 3854405554
-		{ &Z_Construct_UFunction_UModLoaderSubsystem_LoadMods, "LoadMods" }, // 3570751051
+		{ &Z_Construct_UFunction_UModLoaderSubsystem_GetLoadedVehicleClasses, "GetLoadedVehicleClasses" }, // 1923437590
+		{ &Z_Construct_UFunction_UModLoaderSubsystem_LoadMods, "LoadMods" }, // 1086313727
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -178,8 +178,8 @@ struct Z_Construct_UClass_UModLoaderSubsystem_Statics
 	};
 	static const UECodeGen_Private::FClassParams ClassParams;
 };
-const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UModLoaderSubsystem_Statics::NewProp_LoadedVehicleClasses_Inner = { "LoadedVehicleClasses", nullptr, (EPropertyFlags)0x0000000000000000, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UClass, Z_Construct_UClass_UObject_NoRegister, METADATA_PARAMS(0, nullptr) };
-const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UModLoaderSubsystem_Statics::NewProp_LoadedVehicleClasses = { "LoadedVehicleClasses", nullptr, (EPropertyFlags)0x0020080000000000, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UModLoaderSubsystem, LoadedVehicleClasses), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LoadedVehicleClasses_MetaData), NewProp_LoadedVehicleClasses_MetaData) };
+const UECodeGen_Private::FClassPropertyParams Z_Construct_UClass_UModLoaderSubsystem_Statics::NewProp_LoadedVehicleClasses_Inner = { "LoadedVehicleClasses", nullptr, (EPropertyFlags)0x0004000000000000, UECodeGen_Private::EPropertyGenFlags::Class, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, 0, Z_Construct_UClass_UClass, Z_Construct_UClass_AActor_NoRegister, METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FArrayPropertyParams Z_Construct_UClass_UModLoaderSubsystem_Statics::NewProp_LoadedVehicleClasses = { "LoadedVehicleClasses", nullptr, (EPropertyFlags)0x0024080000000000, UECodeGen_Private::EPropertyGenFlags::Array, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(UModLoaderSubsystem, LoadedVehicleClasses), EArrayPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_LoadedVehicleClasses_MetaData), NewProp_LoadedVehicleClasses_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_UModLoaderSubsystem_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UModLoaderSubsystem_Statics::NewProp_LoadedVehicleClasses_Inner,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_UModLoaderSubsystem_Statics::NewProp_LoadedVehicleClasses,
@@ -219,14 +219,14 @@ UModLoaderSubsystem::~UModLoaderSubsystem() {}
 // ********** End Class UModLoaderSubsystem ********************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics
+struct Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UModLoaderSubsystem, UModLoaderSubsystem::StaticClass, TEXT("UModLoaderSubsystem"), &Z_Registration_Info_UClass_UModLoaderSubsystem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UModLoaderSubsystem), 1769263771U) },
+		{ Z_Construct_UClass_UModLoaderSubsystem, UModLoaderSubsystem::StaticClass, TEXT("UModLoaderSubsystem"), &Z_Registration_Info_UClass_UModLoaderSubsystem, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UModLoaderSubsystem), 3606543554U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_3822940311(TEXT("/Script/ModVehicleLoader"),
-	Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics::ClassInfo),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_3050724208(TEXT("/Script/ModVehicleLoader"),
+	Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoader_Public_ModLoaderSubsystem_h__Script_ModVehicleLoader_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);
 // ********** End Registration *********************************************************************

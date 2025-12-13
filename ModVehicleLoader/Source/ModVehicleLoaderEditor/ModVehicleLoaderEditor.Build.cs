@@ -13,22 +13,24 @@ public class ModVehicleLoaderEditor : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"InputCore",
-				"ModVehicleLoader" // Link to our Runtime module
+				"ModVehicleLoader"
 			}
 		);
 
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"UnrealEd",        // REQUIRED: Main Editor functionality
-				"AssetTools",      // REQUIRED: For FBX importing logic
-				"ContentBrowser",  // For interacting with the content browser
-				"Slate",           // UI Framework
-				"SlateCore",       // UI Core
-				"ToolMenus",       // For adding buttons to the toolbar
-				"EditorScriptingUtilities", // Helper for automation tasks
-				"DesktopPlatform", // For file dialogs
-				"MainFrame"
+				"UnrealEd",
+				"AssetTools",
+				"ContentBrowser",
+				"Slate",
+				"SlateCore",
+				"ToolMenus",
+				"LevelEditor",
+				"EditorScriptingUtilities",
+				"DesktopPlatform",
+				"Blutility", 
+				"UMGEditor" 
 			}
 		);
 	}

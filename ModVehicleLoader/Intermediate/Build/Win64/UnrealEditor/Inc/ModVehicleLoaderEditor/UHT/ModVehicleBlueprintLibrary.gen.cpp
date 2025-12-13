@@ -29,11 +29,11 @@ struct Z_Construct_UFunction_UModVehicleBlueprintLibrary_ImportModVehicle_Static
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "Modding Tools" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Imports the vehicle from the path and sets up materials */" },
+		{ "Comment", "// Imports the vehicle from the path\n" },
 #endif
 		{ "ModuleRelativePath", "Public/ModVehicleBlueprintLibrary.h" },
 #if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Imports the vehicle from the path and sets up materials" },
+		{ "ToolTip", "Imports the vehicle from the path" },
 #endif
 	};
 #endif // WITH_METADATA
@@ -79,7 +79,7 @@ struct Z_Construct_UFunction_UModVehicleBlueprintLibrary_OpenModFileDialog_Stati
 	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
 		{ "Category", "Modding Tools" },
 #if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Opens a Windows File Dialog to pick an FBX */" },
+		{ "Comment", "// Opens a Windows File Dialog to pick an FBX\n" },
 #endif
 		{ "ModuleRelativePath", "Public/ModVehicleBlueprintLibrary.h" },
 #if !UE_BUILD_SHIPPING
@@ -126,6 +126,55 @@ DEFINE_FUNCTION(UModVehicleBlueprintLibrary::execOpenModFileDialog)
 }
 // ********** End Class UModVehicleBlueprintLibrary Function OpenModFileDialog *********************
 
+// ********** Begin Class UModVehicleBlueprintLibrary Function PackModPlugin ***********************
+struct Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics
+{
+	struct ModVehicleBlueprintLibrary_eventPackModPlugin_Parms
+	{
+		FString PluginName;
+	};
+#if WITH_METADATA
+	static constexpr UECodeGen_Private::FMetaDataPairParam Function_MetaDataParams[] = {
+		{ "Category", "Modding Tools" },
+#if !UE_BUILD_SHIPPING
+		{ "Comment", "// Packs the mod/plugin into a .pak file\n" },
+#endif
+		{ "ModuleRelativePath", "Public/ModVehicleBlueprintLibrary.h" },
+#if !UE_BUILD_SHIPPING
+		{ "ToolTip", "Packs the mod/plugin into a .pak file" },
+#endif
+	};
+#endif // WITH_METADATA
+	static const UECodeGen_Private::FStrPropertyParams NewProp_PluginName;
+	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+	static const UECodeGen_Private::FFunctionParams FuncParams;
+};
+const UECodeGen_Private::FStrPropertyParams Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::NewProp_PluginName = { "PluginName", nullptr, (EPropertyFlags)0x0010000000000080, UECodeGen_Private::EPropertyGenFlags::Str, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ModVehicleBlueprintLibrary_eventPackModPlugin_Parms, PluginName), METADATA_PARAMS(0, nullptr) };
+const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::PropPointers[] = {
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::NewProp_PluginName,
+};
+static_assert(UE_ARRAY_COUNT(Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::PropPointers) < 2048);
+const UECodeGen_Private::FFunctionParams Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::FuncParams = { { (UObject*(*)())Z_Construct_UClass_UModVehicleBlueprintLibrary, nullptr, "PackModPlugin", Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::PropPointers), sizeof(Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::ModVehicleBlueprintLibrary_eventPackModPlugin_Parms), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x04022401, 0, 0, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::Function_MetaDataParams), Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::Function_MetaDataParams)},  };
+static_assert(sizeof(Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::ModVehicleBlueprintLibrary_eventPackModPlugin_Parms) < MAX_uint16);
+UFunction* Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin()
+{
+	static UFunction* ReturnFunction = nullptr;
+	if (!ReturnFunction)
+	{
+		UECodeGen_Private::ConstructUFunction(&ReturnFunction, Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin_Statics::FuncParams);
+	}
+	return ReturnFunction;
+}
+DEFINE_FUNCTION(UModVehicleBlueprintLibrary::execPackModPlugin)
+{
+	P_GET_PROPERTY(FStrProperty,Z_Param_PluginName);
+	P_FINISH;
+	P_NATIVE_BEGIN;
+	UModVehicleBlueprintLibrary::PackModPlugin(Z_Param_PluginName);
+	P_NATIVE_END;
+}
+// ********** End Class UModVehicleBlueprintLibrary Function PackModPlugin *************************
+
 // ********** Begin Class UModVehicleBlueprintLibrary **********************************************
 void UModVehicleBlueprintLibrary::StaticRegisterNativesUModVehicleBlueprintLibrary()
 {
@@ -133,6 +182,7 @@ void UModVehicleBlueprintLibrary::StaticRegisterNativesUModVehicleBlueprintLibra
 	static const FNameNativePtrPair Funcs[] = {
 		{ "ImportModVehicle", &UModVehicleBlueprintLibrary::execImportModVehicle },
 		{ "OpenModFileDialog", &UModVehicleBlueprintLibrary::execOpenModFileDialog },
+		{ "PackModPlugin", &UModVehicleBlueprintLibrary::execPackModPlugin },
 	};
 	FNativeFunctionRegistrar::RegisterFunctions(Class, Funcs, UE_ARRAY_COUNT(Funcs));
 }
@@ -175,8 +225,9 @@ struct Z_Construct_UClass_UModVehicleBlueprintLibrary_Statics
 #endif // WITH_METADATA
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FClassFunctionLinkInfo FuncInfo[] = {
-		{ &Z_Construct_UFunction_UModVehicleBlueprintLibrary_ImportModVehicle, "ImportModVehicle" }, // 4118005317
-		{ &Z_Construct_UFunction_UModVehicleBlueprintLibrary_OpenModFileDialog, "OpenModFileDialog" }, // 1976626775
+		{ &Z_Construct_UFunction_UModVehicleBlueprintLibrary_ImportModVehicle, "ImportModVehicle" }, // 4151589019
+		{ &Z_Construct_UFunction_UModVehicleBlueprintLibrary_OpenModFileDialog, "OpenModFileDialog" }, // 3041937281
+		{ &Z_Construct_UFunction_UModVehicleBlueprintLibrary_PackModPlugin, "PackModPlugin" }, // 3990792380
 	};
 	static_assert(UE_ARRAY_COUNT(FuncInfo) < 2048);
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -218,14 +269,14 @@ UModVehicleBlueprintLibrary::~UModVehicleBlueprintLibrary() {}
 // ********** End Class UModVehicleBlueprintLibrary ************************************************
 
 // ********** Begin Registration *******************************************************************
-struct Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_Statics
+struct Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_UModVehicleBlueprintLibrary, UModVehicleBlueprintLibrary::StaticClass, TEXT("UModVehicleBlueprintLibrary"), &Z_Registration_Info_UClass_UModVehicleBlueprintLibrary, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UModVehicleBlueprintLibrary), 2552101448U) },
+		{ Z_Construct_UClass_UModVehicleBlueprintLibrary, UModVehicleBlueprintLibrary::StaticClass, TEXT("UModVehicleBlueprintLibrary"), &Z_Registration_Info_UClass_UModVehicleBlueprintLibrary, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(UModVehicleBlueprintLibrary), 1180195436U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_338729440(TEXT("/Script/ModVehicleLoaderEditor"),
-	Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_KRAT0S_OneDrive_Desktop_AUTO_ARCH_PAK_EXPORT_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_Statics::ClassInfo),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_4189951226(TEXT("/Script/ModVehicleLoaderEditor"),
+	Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_AUTO_ARCH_PAK_EXPORT_Plugins_ModVehicleLoader_Source_ModVehicleLoaderEditor_Public_ModVehicleBlueprintLibrary_h__Script_ModVehicleLoaderEditor_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);
 // ********** End Registration *********************************************************************

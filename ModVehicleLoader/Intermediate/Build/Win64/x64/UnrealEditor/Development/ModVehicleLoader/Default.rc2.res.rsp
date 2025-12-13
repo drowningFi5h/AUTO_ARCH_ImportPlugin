@@ -87,5 +87,5 @@
 /DPROJECT_COPYRIGHT_STRING="Fill out your copyright notice in the Description page of Project Settings."
 /DPROJECT_PRODUCT_NAME="Third Person BP Game Template"
 /DPROJECT_PRODUCT_IDENTIFIER=AUTO_ARCH_PAK_EXPORT
-/fo "C:/Users/KRAT0S/OneDrive/Desktop/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModVehicleLoader/Default.rc2.res"
+/fo "D:/AUTO_ARCH_PAK_EXPORT/AUTO_ARCH_PAK_EXPORT/Plugins/ModVehicleLoader/Intermediate/Build/Win64/x64/UnrealEditor/Development/ModVehicleLoader/Default.rc2.res"
 "../Build/Windows/Resources/Default.rc2"
